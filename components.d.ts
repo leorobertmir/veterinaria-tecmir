@@ -13,6 +13,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    UAlert: typeof import('./node_modules/.pnpm/@nuxt+ui@4.3.0_@babel+parse_4737ae0a4d0e8b0d130f4edea2498f71/node_modules/@nuxt/ui/dist/runtime/components/Alert.vue')['default']
     UApp: typeof import('./node_modules/.pnpm/@nuxt+ui@4.3.0_@babel+parse_4737ae0a4d0e8b0d130f4edea2498f71/node_modules/@nuxt/ui/dist/runtime/components/App.vue')['default']
     UAvatar: typeof import('./node_modules/.pnpm/@nuxt+ui@4.3.0_@babel+parse_4737ae0a4d0e8b0d130f4edea2498f71/node_modules/@nuxt/ui/dist/runtime/components/Avatar.vue')['default']
     UBadge: typeof import('./node_modules/.pnpm/@nuxt+ui@4.3.0_@babel+parse_4737ae0a4d0e8b0d130f4edea2498f71/node_modules/@nuxt/ui/dist/runtime/components/Badge.vue')['default']

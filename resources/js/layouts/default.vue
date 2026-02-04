@@ -52,6 +52,11 @@ const links = [[{
   to: '/facturas',
   onSelect: () => navigateTo('/facturas')
 }, {
+  label: 'Inventario',
+  icon: 'i-heroicons-archive-box',
+  to: '/productos',
+  onSelect: () => navigateTo('/productos')
+}, {
   label: 'Reportes',
   icon: 'i-lucide-bar-chart-3',
   to: '/reportes',

@@ -7,6 +7,7 @@ use Src\Mascota\Application\Controllers\MascotaWebController;
 use Src\Cita\Application\Controllers\CitaWebController;
 use Src\HistoriaClinica\Application\Controllers\HistoriaClinicaWebController;
 use Src\Factura\Application\Controllers\FacturaWebController;
+use Src\Producto\Application\Controllers\ProductoWebController;
 use Src\Portal\Application\Controllers\PortalWebController;
 use Src\Reportes\Application\Controllers\ReporteWebController;
 use Inertia\Inertia;
@@ -68,6 +69,16 @@ Route::middleware('auth')->group(function () {
         Route::get('/{factura}/edit', [FacturaWebController::class, 'edit'])->name('edit');
         Route::put('/{factura}', [FacturaWebController::class, 'update'])->name('update');
         Route::delete('/{factura}', [FacturaWebController::class, 'destroy'])->name('destroy');
+    });
+
+    // Productos
+    Route::prefix('productos')->name('productos.')->group(function () {
+        Route::get('/', [ProductoWebController::class, 'index'])->name('index');
+        Route::get('/create', [ProductoWebController::class, 'create'])->name('create');
+        Route::post('/', [ProductoWebController::class, 'store'])->name('store');
+        Route::get('/{producto}/edit', [ProductoWebController::class, 'edit'])->name('edit');
+        Route::put('/{producto}', [ProductoWebController::class, 'update'])->name('update');
+        Route::delete('/{producto}', [ProductoWebController::class, 'destroy'])->name('destroy');
     });
 
     // Portal Cliente

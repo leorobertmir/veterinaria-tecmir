@@ -1,14 +1,26 @@
 <script setup lang="ts">
 import { ref, shallowRef } from 'vue'
 import { sub } from 'date-fns'
-import type { DropdownMenuItem } from '@nuxt/ui'
 import type { Period, Range } from '../types'
-import { useDashboard } from '../composables/useDashboard'
 import HomeDateRangePicker from '../components/home/HomeDateRangePicker.vue'
 import HomePeriodSelect from '../components/home/HomePeriodSelect.vue'
 import HomeStats from '../components/home/HomeStats.vue'
 import HomeChart from '../components/home/HomeChart.client.vue'
-import HomeSales from '../components/home/HomeSales.vue'
+
+// Se eliminó la importación de HomeSales para quitar la tabla inferior
+
+interface SalesDatum {
+  date: string
+  amount: number
+}
+
+const props = defineProps<{
+  revenue: number
+  orders: number
+  customers: number
+  growth: number
+  salesData: SalesDatum[]
+}>()
 
 const range = shallowRef<Range>({
   start: sub(new Date(), { days: 14 }),
@@ -20,16 +32,14 @@ const period = ref<Period>('daily')
 <template>
   <UDashboardPanel id="home">
     <template #header>
-      <UDashboardNavbar title="Home" :ui="{ right: 'gap-3' }">
+      <UDashboardNavbar title="Inicio" :ui="{ right: 'gap-3' }">
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
-
       </UDashboardNavbar>
 
       <UDashboardToolbar>
         <template #left>
-          <!-- NOTE: The `-ms-1` class is used to align with the `DashboardSidebarCollapse` button here. -->
           <HomeDateRangePicker v-model="range" class="-ms-1" />
 
           <HomePeriodSelect v-model="period" :range="range" />
@@ -38,9 +48,13 @@ const period = ref<Period>('daily')
     </template>
 
     <template #body>
-      <HomeStats :period="period" :range="range" />
-      <HomeChart :period="period" :range="range" />
-      <HomeSales :period="period" :range="range" />
-    </template>
+      <HomeStats
+        :period="period"
+        :range="range"
+        :stats="{ revenue: props.revenue, orders: props.orders, customers: props.customers, growth: props.growth }"
+      />
+      <HomeChart :period="period" :range="range" :sales-data="props.salesData" />
+      
+      </template>
   </UDashboardPanel>
 </template>

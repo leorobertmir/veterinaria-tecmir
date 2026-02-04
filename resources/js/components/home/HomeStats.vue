@@ -1,13 +1,20 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { computed } from 'vue'
 import type { Period, Range, Stat } from '../../types'
 
 const props = defineProps<{
   period: Period
   range: Range
+  stats: {
+    revenue: number
+    orders: number
+    customers: number
+    growth: number
+  }
 }>()
 
 function formatCurrency(value: number): string {
+  // Mantenemos en-US para asegurar que el símbolo $ se muestre bien
   return value.toLocaleString('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -15,61 +22,33 @@ function formatCurrency(value: number): string {
   })
 }
 
-// Utility function
-const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min
-
-const baseStats = [{
-  title: 'Customers',
-  icon: 'i-lucide-users',
-  minValue: 400,
-  maxValue: 1000,
-  minVariation: -15,
-  maxVariation: 25
-}, {
-  title: 'Conversions',
-  icon: 'i-lucide-chart-pie',
-  minValue: 1000,
-  maxValue: 2000,
-  minVariation: -10,
-  maxVariation: 20
-}, {
-  title: 'Revenue',
-  icon: 'i-lucide-circle-dollar-sign',
-  minValue: 200000,
-  maxValue: 500000,
-  minVariation: -20,
-  maxVariation: 30,
-  formatter: formatCurrency
-}, {
-  title: 'Orders',
-  icon: 'i-lucide-shopping-cart',
-  minValue: 100,
-  maxValue: 300,
-  minVariation: -5,
-  maxVariation: 15
-}]
-
-const stats = ref<Stat[]>([])
-
-const generateStats = () => {
-  stats.value = baseStats.map((stat) => {
-    const value = randomInt(stat.minValue, stat.maxValue)
-    const variation = randomInt(stat.minVariation, stat.maxVariation)
-
-    return {
-      title: stat.title,
-      icon: stat.icon,
-      value: stat.formatter ? stat.formatter(value) : value,
-      variation
-    }
-  })
-}
-
-// Generate initial data
-generateStats()
-
-// Watch for changes
-watch([() => props.period, () => props.range], generateStats)
+// AQUÍ ESTÁ LA TRADUCCIÓN
+const stats = computed<Stat[]>(() => ([
+  {
+    title: 'Ingresos', // Antes Revenue
+    icon: 'i-lucide-circle-dollar-sign',
+    value: formatCurrency(props.stats.revenue),
+    variation: props.stats.growth
+  },
+  {
+    title: 'Ventas', // Antes Orders
+    icon: 'i-lucide-shopping-cart',
+    value: props.stats.orders,
+    variation: 0
+  },
+  {
+    title: 'Clientes', // Antes Customers
+    icon: 'i-lucide-users',
+    value: props.stats.customers,
+    variation: 0
+  },
+  {
+    title: 'Crecimiento', // Antes Growth
+    icon: 'i-lucide-trending-up',
+    value: `${props.stats.growth.toFixed(1)}%`,
+    variation: props.stats.growth
+  }
+]))
 </script>
 
 <template>

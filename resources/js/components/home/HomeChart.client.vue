@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
-import { eachDayOfInterval, eachWeekOfInterval, eachMonthOfInterval, format } from 'date-fns'
+import { ref, computed } from 'vue'
+import { eachDayOfInterval, format, sub } from 'date-fns'
 import { VisXYContainer, VisLine, VisAxis, VisArea, VisCrosshair, VisTooltip } from '@unovis/vue'
 import { useElementSize } from '@vueuse/core'
 import type { Period, Range } from '../../types'
@@ -10,6 +10,7 @@ const cardRef = ref<HTMLElement | null>(null)
 const props = defineProps<{
   period: Period
   range: Range
+  salesData: Array<{ date: string; amount: number }>
 }>()
 
 type DataRecord = {
@@ -19,20 +20,21 @@ type DataRecord = {
 
 const { width } = useElementSize(cardRef)
 
-const data = ref<DataRecord[]>([])
+const data = computed<DataRecord[]>(() => {
+  if (props.salesData && props.salesData.length > 0) {
+    return props.salesData.map(item => ({
+      date: new Date(item.date),
+      amount: Number(item.amount) || 0
+    }))
+  }
 
-watch([() => props.period, () => props.range], () => {
-  const dates = ({
-    daily: eachDayOfInterval,
-    weekly: eachWeekOfInterval,
-    monthly: eachMonthOfInterval
-  } as Record<Period, typeof eachDayOfInterval>)[props.period](props.range)
+  const fallbackRange = {
+    start: sub(new Date(), { days: 6 }),
+    end: new Date()
+  }
 
-  const min = 1000
-  const max = 10000
-
-  data.value = dates.map(date => ({ date, amount: Math.floor(Math.random() * (max - min + 1)) + min }))
-}, { immediate: true })
+  return eachDayOfInterval(fallbackRange).map(date => ({ date, amount: 0 }))
+})
 
 const x = (_: DataRecord, i: number) => i
 const y = (d: DataRecord) => d.amount
@@ -42,11 +44,7 @@ const total = computed(() => data.value.reduce((acc: number, { amount }) => acc 
 const formatNumber = new Intl.NumberFormat('en', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format
 
 const formatDate = (date: Date): string => {
-  return ({
-    daily: format(date, 'd MMM'),
-    weekly: format(date, 'd MMM'),
-    monthly: format(date, 'MMM yyy')
-  })[props.period]
+  return format(date, 'd MMM')
 }
 
 const xTicks = (i: number) => {

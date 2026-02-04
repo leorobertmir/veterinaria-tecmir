@@ -81,6 +81,8 @@ export interface Producto {
   precioUnitario: number
   stock: number
   categoriaId: string
+  tipo?: 'bien' | 'servicio'
+  activo?: boolean
   createdAt: string
   updatedAt: string
 }

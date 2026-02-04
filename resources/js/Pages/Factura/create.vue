@@ -36,6 +36,12 @@ const errors = computed(() => {
   return result
 })
 
+const stockError = computed(() => {
+  const detalleError = errors.value.detalles
+  if (!detalleError) return ''
+  return detalleError.toLowerCase().includes('stock') ? detalleError : ''
+})
+
 const isLoading = ref(false)
 const productoSeleccionado = ref<Producto | null>(null)
 
@@ -173,6 +179,15 @@ const handleCancel = () => {
           <h2 class="text-2xl font-semibold">Nueva Factura</h2>
           <p class="text-sm text-muted mt-1">Complete los datos de la factura</p>
         </div>
+
+        <UAlert
+          v-if="stockError"
+          color="error"
+          variant="subtle"
+          title="Stock insuficiente"
+          :description="stockError"
+          class="mb-4"
+        />
 
         <form @submit.prevent="handleSubmit" class="space-y-6">
           <div class="grid grid-cols-4 gap-8">
